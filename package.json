@@ -1,5 +1,6 @@
 {
     "name": "cse340-practice-tippets",
+    "main": "server.js",
     "dependencies": {
         "express": "^4.21.2"
     },
