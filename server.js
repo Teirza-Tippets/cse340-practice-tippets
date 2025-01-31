@@ -1,4 +1,3 @@
-// Import express using ESM syntax
 import express from 'express';
 import path from 'path';
 import { dirname } from 'path';
@@ -6,59 +5,103 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 const mode = process.env.MODE || 'production';
 const port = process.env.PORT || 3000;
-
-// Create an instance of an Express application
 const app = express();
 
-// Set the view engine to EJS
-app.set('view engine', 'ejs');
 
-// Register the 'public' directory to serve static files
+app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
+
+//global midellware for mode for dev vs production
+app.use((req, res, next) => {
+    res.locals.devModeEnables = true;
+    res.locals.port = port;
+    next();
+});
+
+//global middleware
+app.use((req, res, next) => {
+    res.setHeader('X-Powered-By', 'Express Middleware Tutorial');
+    next();
+});
+
+// ID validation middleware
+const validateId = (req, res, next) => {
+    const { id } = req.params;
+    if (isNaN(id)) {
+        return res.status(400).send('Invalid ID: must be a number.');
+    }
+    next(); // Pass control to the next middleware or route
+};
+
+// Middleware to validate name
+const validateName = (req, res, next) => {
+    const { name } = req.params;
+    if (!/^[a-zA-Z]+$/.test(name)) {
+        return res.status(400).send('Invalid name: must only contain letters.');
+    }
+    next();
+};
+
+app.use((req, res, next) => {
+    console.log(`Method: ${req.method}, URL: ${req.url}`);
+    next(); // Pass control to the next middleware or route
+});
 
 // Home page
 app.get('/', (req, res) => {
     const title = 'Home Page';
-    const content = '<h1>Welcome to the Home Page</h1>';
-    res.render('index', { title, content, mode, port });
+    const content = `<h1>Welcome to the Home Page</h1>`;
+    res.render('index', { title, content});
 });
 
 // About page
 app.get('/about', (req, res) => {
     const title = 'About Page';
     const content = '<h1>Welcome to the About Page</h1>';
-    res.render('index', { title, content, mode, port });
+    res.render('index', { title, content});
 });
 
 // Contact page
 app.get('/contact', (req, res) => {
     const title = 'Contact Page';
     const content = '<h1>Welcome to the Contact Page</h1>';
-    res.render('index', { title, content, mode, port });
+    res.render('index', { title, content});
 });
 
-// Account page
-app.get('/account/:name/:id', (req, res) => {
+// Account page route with ID and name validation
+app.get('/account/:name/:id', validateName, validateId, (req, res) => {
     const title = "Account Page";
     const { name, id } = req.params;
     const isEven = id % 2 === 0 ? "even" : "odd";
     const content = `
         <h1>Welcome, ${name}!</h1>
-        <p>Your account ID is ${id}, which is an ${isEven} number.</p>
-    `;
-    res.render('index', { title, content, mode, port });
+        <p>Your account ID is ${id}, which is an ${isEven} number.</p>`;
+    res.render('index', { title, content});
 });
 
-//404 error
-app.use((req, res, next) =>{
-    const title = 'Page Not Found'
-    res.status(404);
-    res.render('404', title, mode, port);
+// Handle 404 errors by passing an error
+app.use((req, res, next) => {
+    const error = new Error('Page Not Found');
+    error.status = 404;
+    next(error);
 });
-
+ 
+// Centralized error handler
+app.use((err, req, res, next) => {
+    const status = err.status || 500;
+    const context = { mode, port };
+    res.status(status);
+    if (status === 404) {
+        context.title = 'Page Not Found';
+        res.render('404', context);
+    } else {
+        context.title = 'Internal Server Error';
+        context.error = err.message;
+        res.render('500', context);
+    }
+});
 // When in development mode, start a WebSocket server for live reloading
 if (mode.includes('dev')) {
     const ws = await import('ws');
@@ -78,9 +121,6 @@ if (mode.includes('dev')) {
         console.error('Failed to start WebSocket server:', error);
     }
 }
-
-
-
 
 // Start the server and listen on the specified port
 app.listen(port, () => {
