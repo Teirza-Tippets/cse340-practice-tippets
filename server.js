@@ -12,12 +12,17 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
+
+//global midellware for mode for dev vs production
 app.use((req, res, next) => {
-    res.setHeader('X-Powered-By', 'Express Middleware Tutorial');
+    res.locals.devModeEnables = true;
+    res.locals.port = port;
     next();
 });
+
+//global middleware
 app.use((req, res, next) => {
-    req.timestamp = new Date().toISOString();
+    res.setHeader('X-Powered-By', 'Express Middleware Tutorial');
     next();
 });
 
@@ -47,22 +52,22 @@ app.use((req, res, next) => {
 // Home page
 app.get('/', (req, res) => {
     const title = 'Home Page';
-    const content = '<h1>Welcome to the Home Page</h1>';
-    res.render('index', { title, content, mode, port });
+    const content = `<h1>Welcome to the Home Page</h1>`;
+    res.render('index', { title, content});
 });
 
 // About page
 app.get('/about', (req, res) => {
     const title = 'About Page';
     const content = '<h1>Welcome to the About Page</h1>';
-    res.render('index', { title, content, mode, port });
+    res.render('index', { title, content});
 });
 
 // Contact page
 app.get('/contact', (req, res) => {
     const title = 'Contact Page';
     const content = '<h1>Welcome to the Contact Page</h1>';
-    res.render('index', { title, content, mode, port });
+    res.render('index', { title, content});
 });
 
 // Account page route with ID and name validation
@@ -70,13 +75,10 @@ app.get('/account/:name/:id', validateName, validateId, (req, res) => {
     const title = "Account Page";
     const { name, id } = req.params;
     const isEven = id % 2 === 0 ? "even" : "odd";
-    const timestamp = req.timestamp;
     const content = `
         <h1>Welcome, ${name}!</h1>
-        <p>Your account ID is ${id}, which is an ${isEven} number.</p>
-        <p>${timestamp}</p>
-    `;
-    res.render('index', { title, content, mode, port });
+        <p>Your account ID is ${id}, which is an ${isEven} number.</p>`;
+    res.render('index', { title, content});
 });
 
 // Handle 404 errors by passing an error
