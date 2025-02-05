@@ -3,6 +3,9 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import {getNavigationLinks} from './src/models/index.js';
+getNavigationLinks();
+
 // Import middlewares and routes
 import baseRoute from './src/routes/index.js';
 import layouts from './src/middleware/layouts.js';
