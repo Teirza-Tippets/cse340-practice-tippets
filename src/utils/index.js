@@ -14,6 +14,9 @@ const getNav = async () => {
         <li><a href="/category/add">Add Category</a></li>
         <li><a href="/category/delete">Delete Category</a></li>
         <li><a href="/About">About Me</a></li>
+        <li><a href="/account/register">Register</a></li>
+        <li><a href="/account/login">Login</a></li>
+        <li><a href="/account">Account</a></li>
         </ul>
     </nav>`;
 };
