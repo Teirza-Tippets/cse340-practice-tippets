@@ -5,12 +5,13 @@
             <h3><%= game.game_name %></h3>
             <p><%= game.game_description %></p>
             
-            <a href="/game/edit/<%= game.game_id %>">Edit</a>
-
-            <form action="/game/delete/<%= game.game_id %>" method="POST">
-                <input type="hidden" name="game_id" value="<%= game.game_id %>">
-                <button type="submit">Delete</button>
-            </form>
+            <% if (isLoggedIn) { %>
+                <a href="/game/edit/<%= game.game_id %>">Edit</a>
+                <form action="/game/delete/<%= game.game_id %>" method="POST">
+                    <input type="hidden" name="game_id" value="<%= game.game_id %>">
+                    <button type="submit">Delete</button>
+                </form>
+            <% } %>
         </div>
     <% }); %>
 </div>

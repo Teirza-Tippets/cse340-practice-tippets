@@ -4,9 +4,10 @@ const port = process.env.PORT || 3000;
 const mode = process.env.MODE || 'production';
 
 const configureNodeEnvironment = async (req, res, next) => {
+    res.locals.isLoggedIn = req.session.user ? true : false;
     res.locals.devModeWarning = '';
     res.locals.isDevMode = mode.includes('dev');
-    res.locals.navHTML = await getNav();
+    res.locals.navHTML = await getNav(req.session.user);
     res.locals.port = port;
     res.locals.scripts = [];
     res.locals.styles = [];
@@ -14,9 +15,6 @@ const configureNodeEnvironment = async (req, res, next) => {
     if (res.locals.isDevMode) {
         // Add development mode warning
         res.locals.devModeWarning = '<p class="dev-mode-msg">Site is in development mode<p>';
-
-        // Add a stylesheet that loads only in development mode
-        res.locals.styles.push('<link rel="stylesheet" href="/css/dev-mode.css">');
 
         // Add livereload script
         res.locals.scripts.push(`
@@ -27,9 +25,6 @@ const configureNodeEnvironment = async (req, res, next) => {
                 };
             </script>    
         `);
-
-        // Add a script that loads only in development mode
-        res.locals.scripts.push('<script src="/js/dev-mode.js"></script');
     }
 
     next();
