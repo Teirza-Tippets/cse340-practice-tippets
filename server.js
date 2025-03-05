@@ -4,22 +4,20 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Import all other required modules: Route handlers, Middleware, etc.
+import SQLiteStore from "connect-sqlite3";
+import accountRoute from './src/routes/account/index.js';
 import baseRoute from './src/routes/index.js';
 import categoryRoute from './src/routes/category/index.js';
 import configNodeEnv from './src/middleware/node-env.js';
 import configureStaticPaths from './src/middleware/static-paths.js';
 import fileUploads from './src/middleware/file-uploads.js';
-import gameRoute from './src/routes/game/index.js';
-import accountRoute from './src/routes/account/index.js';
-import layouts from './src/middleware/layouts.js';
 import flashMessages from './src/middleware/flash-messages.js';
+import gameRoute from './src/routes/game/index.js';
+import layouts from './src/middleware/layouts.js';
+import session from 'express-session';
 import { notFoundHandler, globalErrorHandler } from './src/middleware/error-handler.js';
 import { setupDatabase } from './src/database/index.js';
-
-// Add the following imports
-import session from 'express-session';
-import sqlite from "connect-sqlite3";
- 
+import contactRouter from './src/routes/contact/index.js';
 
 // Get the current file path and directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -28,31 +26,30 @@ const __dirname = path.dirname(__filename);
 // Start the server on the specified port
 const port = process.env.PORT || 3000;
 const mode = process.env.MODE || 'production';
-
-const sqliteSessionStore = sqlite(session);
+const SQLiteSessionStore = SQLiteStore(session);
 
 // Create an instance of an Express application
 const app = express();
 
-// Configure the application based on environment settings
-app.use(configNodeEnv);
-
-// Add the session middleware after you configure the `configNodeEnv` middleware
+// Configure session middleware
 app.use(session({
-    store: new sqliteSessionStore({
-        db: "db.sqlite",           // SQLite database file
-        dir: "./src/database/",    // Directory where the file is stored
-        concurrentDB: true         // Allows multiple processes to use the database
+    store: new SQLiteSessionStore({
+        db: "db.sqlite", // SQLite database file
+        dir: "./src/database/", // Directory where the file is stored
+        concurrentDB: true // Allows multiple processes to use the database
     }),
     secret: process.env.SESSION_SECRET || "default-secret",
-    resave: false,                 // Prevents re-saving sessions that have not changed
-    saveUninitialized: true,       // Saves new sessions even if unmodified
+    resave: false, // Prevents re-saving sessions that have not changed
+    saveUninitialized: true, // Saves new sessions even if unmodified
     name: "sessionId",
     cookie: {
-        secure: false,             // Set to `true` in production with HTTPS
-        httpOnly: true,            // Prevents client-side access to the cookie
+        secure: false, // Set to `true` in production with HTTPS
+        httpOnly: true, // Prevents client-side access to the cookie
     }
 }));
+
+// Configure the application based on environment settings
+app.use(configNodeEnv);
 
 // Configure static paths for the Express application
 configureStaticPaths(app);
@@ -75,6 +72,7 @@ app.use(express.json());
 // Middleware to parse URL-encoded form data (like from a standard HTML form)
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware to handle flash messages
 app.use(flashMessages);
 
 // Use the home route for the root URL
@@ -86,8 +84,10 @@ app.use('/game', gameRoute);
 // Handle routes specific to the categories
 app.use('/category', categoryRoute);
 
-//handles routes specific to the accounts 
+// Handle routes specific to the account
 app.use('/account', accountRoute);
+
+app.use('/contact', contactRouter);
 
 // Apply error handlers
 app.use(notFoundHandler);

@@ -1,54 +1,82 @@
 import express from 'express';
 import { registerUser, verifyUser } from '../../models/account/index.js';
+import { body, validationResult } from "express-validator";
+import { requireAuth } from '../../utils/index.js';
 
 const router = express.Router();
 
+// GET /account/register
 router.get('/register', (req, res) => {
-    res.render('account/register');
+    res.locals.scripts.push('<script src="/js/registration.js"></script>');
+    res.render('account/register', { title: 'Register' });
 });
 
-router.post('/register', async (req, res) => {
-    const { email, password, confirm_password } = req.body;
-    if (!email || !password || password !== confirm_password) {
-        req.flash('error', 'Required fields must not be empty or passwords do not match.');
-        return res.redirect('/account/register');
-    }
-    try {
-        await registerUser(email, password);
-        req.flash('success', 'Registration successful! Please log in.');
-        res.redirect('/account/login');
-    } catch (error) {
-        console.error(error);
-        req.flash('error', 'Registration failed. Email might already be in use.');
+const registrationValidation = [
+    body("email")
+        .isEmail()
+        .withMessage("Invalid email format."),
+    body("password")
+        .matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
+        .withMessage("Password must be at least 8 characters long, include one uppercase letter, one number, and one symbol.")
+];
+
+// POST /account/register
+router.post('/register', registrationValidation, async (req, res) => {
+    const results = validationResult(req);
+    if (results.errors.length > 0) {
+        results.errors.forEach((error) => {
+            req.flash('error', error.msg);
+        });
         res.redirect('/account/register');
     }
+
+    const email = req.body.email;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirm_password;
+    
+    if (password !== confirmPassword) {
+        req.flash('error', 'Passwords did not match.');
+        res.redirect('/account/register');
+        return;
+    }
+
+    await registerUser(email, password);
+    res.redirect('/account/login');
 });
 
-
+// GET /account/login
 router.get('/login', (req, res) => {
-    res.render('account/login');
+    res.render('account/login', { title: 'Login' });
 });
 
+// POST /account/login
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.redirect('/account/login');
-    }
-    try {
-        const user = await verifyUser(email, password);
-        if (user) {
-            res.redirect('/account');
-        } else {
-            res.redirect('/account/login');
-        }
-    } catch (error) {
-        console.error(error);
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const user = await verifyUser(email, password);
+
+    if (!user) {
+        req.flash('error', 'The information provided does not match our records. Please verify and try again.');
         res.redirect('/account/login');
+        return;
     }
+
+    delete user.password;
+    req.session.user = useTruer;
+    
+    res.redirect('/account');
 });
 
-router.get('/', (req, res) => {
-    res.render('account/index');
+// GET /account
+router.get('/', requireAuth, (req, res) => {
+    res.render('account/index', { title: 'Account' });
+});
+
+// GET /account/logout
+router.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
 });
 
 export default router;

@@ -1,6 +1,6 @@
 const flashMessages = (req, res, next) => {
     if (!req.session) {
-        throw new Error('Flash middleware requires session support.');
+        throw new Error("Flash middleware requires session support. Use `express-session`.");
     }
 
     // Initialize flash storage
@@ -14,7 +14,7 @@ const flashMessages = (req, res, next) => {
     // Move flash messages to `res.locals.flash` for immediate use
     res.locals.flash = [...req.session.flash];
 
-    // Clear flash messages after retrieval
+    // Clear flash messages after they have been retrieved
     req.session.flash = [];
 
     next();
