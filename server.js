@@ -1,57 +1,34 @@
-// Import required modules using ESM import syntax
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Import all other required modules: Route handlers, Middleware, etc.
-import SQLiteStore from "connect-sqlite3";
-import accountRoute from './src/routes/account/index.js';
-import baseRoute from './src/routes/index.js';
-import categoryRoute from './src/routes/category/index.js';
+/**
+ * Imports
+ */
 import configNodeEnv from './src/middleware/node-env.js';
-import configureStaticPaths from './src/middleware/static-paths.js';
+import express from "express";
 import fileUploads from './src/middleware/file-uploads.js';
-import flashMessages from './src/middleware/flash-messages.js';
-import gameRoute from './src/routes/game/index.js';
+import homeRoute from './src/routes/index.js';
 import layouts from './src/middleware/layouts.js';
-import session from 'express-session';
-import { notFoundHandler, globalErrorHandler } from './src/middleware/error-handler.js';
-import { setupDatabase } from './src/database/index.js';
-import contactRouter from './src/routes/contact/index.js';
+import path from "path";
+import { configureStaticPaths } from './src/utils/index.js';
+import { fileURLToPath } from 'url';
+import { testDatabase } from './src/models/index.js';
 
-// Get the current file path and directory name
+/**
+ * Global Variables
+ */
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const mode = process.env.NODE_ENV;
+const port = process.env.PORT;
 
-// Start the server on the specified port
-const port = process.env.PORT || 3000;
-const mode = process.env.MODE || 'production';
-const SQLiteSessionStore = SQLiteStore(session);
-
-// Create an instance of an Express application
+/**
+ * Create and configure the Express server
+ */
 const app = express();
-
-// Configure session middleware
-app.use(session({
-    store: new SQLiteSessionStore({
-        db: "db.sqlite", // SQLite database file
-        dir: "./src/database/", // Directory where the file is stored
-        concurrentDB: true // Allows multiple processes to use the database
-    }),
-    secret: process.env.SESSION_SECRET || "default-secret",
-    resave: false, // Prevents re-saving sessions that have not changed
-    saveUninitialized: true, // Saves new sessions even if unmodified
-    name: "sessionId",
-    cookie: {
-        secure: false, // Set to `true` in production with HTTPS
-        httpOnly: true, // Prevents client-side access to the cookie
-    }
-}));
 
 // Configure the application based on environment settings
 app.use(configNodeEnv);
 
-// Configure static paths for the Express application
+// Configure static paths (public dirs) for the Express application
 configureStaticPaths(app);
 
 // Set EJS as the view engine and record the location of the views directory
@@ -72,26 +49,15 @@ app.use(express.json());
 // Middleware to parse URL-encoded form data (like from a standard HTML form)
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware to handle flash messages
-app.use(flashMessages);
+/**
+ * Routes
+ */
 
-// Use the home route for the root URL
-app.use('/', baseRoute);
+app.use('/', homeRoute);
 
-// Handle routes specific to the games
-app.use('/game', gameRoute);
-
-// Handle routes specific to the categories
-app.use('/category', categoryRoute);
-
-// Handle routes specific to the account
-app.use('/account', accountRoute);
-
-app.use('/contact', contactRouter);
-
-// Apply error handlers
-app.use(notFoundHandler);
-app.use(globalErrorHandler);
+/**
+ * Start the server
+ */
 
 // When in development mode, start a WebSocket server for live reloading
 if (mode.includes('dev')) {
@@ -115,8 +81,6 @@ if (mode.includes('dev')) {
 
 // Start the Express server
 app.listen(port, async () => {
-    // Ensure the database is setup
-    await setupDatabase();
-
+    await testDatabase();
     console.log(`Server running on http://127.0.0.1:${port}`);
 });
