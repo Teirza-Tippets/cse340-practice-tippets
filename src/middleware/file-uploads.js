@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Define temporary directory for file uploads
-const tmpDir = path.join(process.cwd(), 'public/images/tmp');
+const tmpDir = path.join(process.cwd(), 'public/tmp');
 
 // Create upload directory if it doesn't exist
 if (!fs.existsSync(tmpDir)) {
@@ -54,21 +54,21 @@ const fileUploads = (req, res, next) => {
 
         // Remove empty file fields from files object and cleanup temp files
         for (const key in files) {
-            const images = files[key];
-            if (Array.isArray(images)) {
-                files[key] = images.filter(image => {
-                    if (image.size === 0) {
-                        fs.unlinkSync(image.filepath);
+            const fileData = files[key];
+            if (Array.isArray(fileData)) {
+                files[key] = fileData.filter(data => {
+                    if (data.size === 0) {
+                        fs.unlinkSync(data.filepath);
                         return false;
                     }
                     return true;
                 });
             } else {
-                if (images.size === 0) {
-                    fs.unlinkSync(images.filepath);
+                if (fileData.size === 0) {
+                    fs.unlinkSync(fileData.filepath);
                     files[key] = [];
                 } else {
-                    files[key] = [images];
+                    files[key] = [fileData];
                 }
             }
         }
