@@ -6,7 +6,10 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const vehicles = await getAllVehicles();
-    res.render('vehicles/index', { vehicles });
+    res.render('vehicles/index', {
+      title: 'All Vehicles',
+      vehicles
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
