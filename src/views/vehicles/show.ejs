@@ -1,0 +1,11 @@
+
+<h1><%= vehicle.title %></h1>
+<p><strong>Description:</strong> <%= vehicle.description %></p>
+<p><strong>Price:</strong> $<%= vehicle.price %></p>
+<p><strong>Status:</strong> <%= vehicle.status %></p>
+
+<% if (vehicle.image_url) { %>
+  <img src="<%= vehicle.image_url %>" alt="<%= vehicle.title %>" width="400" />
+<% } %>
+
+<a href="/vehicles">← Back to listings</a>
