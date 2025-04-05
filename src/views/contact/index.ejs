@@ -1,0 +1,18 @@
+<h2>Contact Us</h2>
+<form action="record.ejs" method="get">
+    <fieldset class="block">
+        <legend>Contact Information</legend>
+            <label>First Name<input type="text" name="fname" required></label>
+            <label>Last Name<input type="text" name="lname" required></label>
+            <label>Email<input type="email" name="email" placeholder="example1234@gmail.com" required></label>
+            <label>Phone<input type="tel" name="tel" required></label>
+    </fieldset>
+    <fieldset class="block">
+        <legend>Please Fill Out</legend>
+            <label>Questions & Comments
+                <textarea rows="5" cols="40" name="bdes" required></textarea>
+            </label>
+    </fieldset>
+    <input type="hidden" name="date" id="date">
+    <input type="submit" value="Submit">
+</form>

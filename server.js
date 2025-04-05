@@ -10,6 +10,10 @@ import path from "path";
 import { configureStaticPaths } from './src/utils/index.js';
 import { fileURLToPath } from 'url';
 import { testDatabase } from './src/models/index.js';
+import vehicleRoutes from './src/routes/vehicles.js';
+import userRoutes from './src/routes/users.js';
+import contactRoutes from './src/routes/contact.js'
+import accountRoute from './src/routes/account.js';
 
 /**
  * Global Variables
@@ -54,6 +58,10 @@ app.use(express.urlencoded({ extended: true }));
  */
 
 app.use('/', homeRoute);
+app.use('/vehicles', vehicleRoutes);
+app.use('/users', userRoutes);
+app.use('/contact', contactRoutes);
+app.use('/account', accountRoute);
 
 /**
  * Start the server

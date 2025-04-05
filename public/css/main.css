@@ -1,0 +1,57 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+
+nav ul {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1em;
+  border-radius: 10px;
+  background-color: gray;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+input, button {
+  width: 100%;
+  padding: 0.5em;
+  margin-bottom: 1em;
+}
+
+button {
+  background-color: var(#faedcd);
+  color: #283618;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: white;
+}
+
+#rating-value {
+  display: block;
+  text-align: center;
+  margin-top: -1em;
+  margin-bottom: 1em;
+}

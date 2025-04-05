@@ -1,0 +1,12 @@
+<h1>Our Vehicles</h1>
+<ul>
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <h2><a href="/vehicles/<%= vehicle.id %>"><%= vehicle.title %></a></h2>
+      <p>Price: $<%= vehicle.price %></p>
+      <% if (vehicle.image_url) { %>
+        <img src="<%= vehicle.image_url %>" alt="<%= vehicle.title %>" width="200" />
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
