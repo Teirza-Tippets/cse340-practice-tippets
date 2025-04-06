@@ -11,11 +11,10 @@ router.get('/', (req, res) => {
   }
 });
 
-// Route to handle the form submission
-router.get('/record', async (req, res) => {
+// Route to handle form submission securely
+router.post('/record', async (req, res) => {
   try {
-    const { username, password, email, rating } = req.query;
-
+    const { username, password, email, rating } = req.body;
 
     res.render('record', { 
       title: 'Submission Received',

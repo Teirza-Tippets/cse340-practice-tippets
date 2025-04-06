@@ -1,0 +1,35 @@
+<section class="dashboard container">
+    <h1>Welcome, <%= user.username %>!</h1>
+  
+    <section class="section-box">
+      <h2>Your Reviews</h2>
+      <% if (reviews.length > 0) { %>
+        <ul class="review-list">
+          <% reviews.forEach(review => { %>
+            <li>
+              <strong><%= review.vehicle_name %>:</strong> <%= review.content %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>You haven’t submitted any reviews yet.</p>
+      <% } %>
+    </section>
+  
+    <section class="section-box">
+      <h2>Your Repair Requests</h2>
+      <% if (repairs.length > 0) { %>
+        <ul class="repair-list">
+          <% repairs.forEach(repair => { %>
+            <li>
+              <strong><%= repair.vehicle_name %></strong><br>
+              Description: <%= repair.description %><br>
+              Status: <%= repair.status %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No repair requests found.</p>
+      <% } %>
+    </section>
+  </section>

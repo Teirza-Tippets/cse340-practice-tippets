@@ -1,13 +1,18 @@
-import { pool } from './db.js';
+import dbClient from '../models/index.js'
 
-export async function getAllVehicles() {
-  const result = await pool.query('SELECT * FROM vehicles ORDER BY created_at DESC');
+const getAllVehicles = async () => {
+  const db = await dbClient;
+  const sql = 'SELECT * FROM  vehicles';
+  const result = await db.query(sql);
   return result.rows;
 }
 
-export async function getVehicleById(id) {
-  const result = await pool.query('SELECT * FROM vehicles WHERE id = $1', [id]);
-  return result.rows[0];
+
+const getClassVehicles = async (vehicleClass) => {
+  const db = await dbClient;
+  const sql = 'SELECT * FROM  vehicles WHERE category_id = $1';
+  const result = await db.query(sql, [vehicleClass]);
+  return result.rows;
 }
 
-
+export {getAllVehicles, getClassVehicles};

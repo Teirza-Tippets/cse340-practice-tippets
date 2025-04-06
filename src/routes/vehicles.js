@@ -1,13 +1,14 @@
 import express from 'express';
-import { getAllVehicles, getVehicleById } from '../models/vehicleModel.js';
+import { getAllVehicles, getClassVehicles } from '../models/vehicleModel.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
     const vehicles = await getAllVehicles();
+    console.log('Fetched vehicles:', vehicles);
     res.render('vehicles/index', {
-      title: 'All Vehicles',
+      title: 'All Vehicles', 
       vehicles
     });
   } catch (err) {
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const vehicle = await getVehicleById(req.params.id);
+    const vehicle = await getClassVehicles(req.params.id);
     if (!vehicle) return res.status(404).send('Vehicle not found');
     res.render('vehicles/show', { vehicle });
   } catch (err) {
