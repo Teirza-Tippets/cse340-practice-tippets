@@ -46,18 +46,26 @@ const configureStaticPaths = (app) => {
  *
  * @returns {string} The navigation menu.
  */
-const getNav = () => {
+const getNav = (user) => {
     return `
-    <nav>
+      <nav class="main-nav">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/vehicles">Browse Vehicles</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/login">Login</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/vehicles">Browse Vehicles</a></li>
+          <li><a href="/contact">Contact</a></li>
+  
+          ${user ? `
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/logout">Logout</a></li>
+          ` : `
+            <li><a href="/auth/login">Login</a></li>
+            <li><a href="/auth/register">Register</a></li>
+          `}
         </ul>
-    </nav>
+      </nav>
     `;
-};
+  };
+  
 
 
 export { configureStaticPaths, getNav };
