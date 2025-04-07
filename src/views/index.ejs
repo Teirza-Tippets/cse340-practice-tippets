@@ -1,3 +1,15 @@
 <h1>Welcome to the Used Car Dealership</h1>
 <p>Find your perfect ride!</p>
+<h2>Featured Vehicles</h2>
+<ul class="featured-vehicles">
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <h3><a href="/vehicles/<%= vehicle.id %>"><%= vehicle.title %></a></h3>
+      <p>Price: $<%= vehicle.price %></p>
+      <% if (vehicle.image_url) { %>
+        <img src="<%= vehicle.image_url %>" alt="<%= vehicle.title %>" width="200" />
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
 <a href="/vehicles">Browse Inventory</a>

@@ -52,8 +52,8 @@ const getNav = (user) => {
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/vehicles">Browse Vehicles</a></li>
-          <li><a href="/contact">Contact</a></li>
-  
+          <li><a href="/categories">Categories</a></li>
+          <li><a href="/contact">Contact</a></li> 
           ${user ? `
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/logout">Logout</a></li>
