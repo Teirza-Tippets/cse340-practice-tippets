@@ -6,7 +6,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const vehicles = await getAllVehicles();
-    console.log('Fetched vehicles:', vehicles);
     res.render('vehicles/index', {
       title: 'All Vehicles', 
       vehicles
