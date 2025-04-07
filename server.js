@@ -8,16 +8,17 @@ import pgSession from 'connect-pg-simple';
 import fileUploads from './src/middleware/file-uploads.js';
 import homeRoute from './src/routes/index.js';
 import layouts from './src/middleware/layouts.js';
+import roles from './src/middleware/role.js';
 import path from "path";
 import { configureStaticPaths } from './src/utils/index.js';
 import { fileURLToPath } from 'url';
 import { testDatabase } from './src/models/index.js';
 import vehicleRoutes from './src/routes/vehicles.js';
-import userRoutes from './src/routes/register.js';
 import contactRoutes from './src/routes/contact.js';
-import loginRoutes from './src/routes/login.js';
-import dashboardRoutes from './src/routes/dashboard.js';
+// import dashboardRoutes from './src/routes/dashboard.js';
 import categoriesRoutes from './src/routes/catgegories.js';
+import authRoutes from './src/routes/auth.js';
+import userRoutes from './src/routes/user.js';
 
 /**
  * Global Variables
@@ -47,6 +48,9 @@ app.set('layout', 'default');
 app.set('layouts', path.join(__dirname, 'src/views/layouts'));
 app.use(layouts);
 
+//middleware for the roles
+app.use(roles);
+
 // Middleware to process multipart form data with file uploads
 app.use(fileUploads);
 
@@ -71,10 +75,10 @@ app.use(session({
  */
 app.use('/', homeRoute);
 app.use('/vehicles', vehicleRoutes);
-app.use('/users', userRoutes);
+app.use('/user', userRoutes);
 app.use('/contact', contactRoutes);
-app.use('/auth', loginRoutes);
-app.use('/dashboard', dashboardRoutes);
+app.use('/auth', authRoutes);
+// app.use('/dashboard', dashboardRoutes);
 app.use('/categories' , categoriesRoutes);
 
 // 404 Handler
