@@ -8,17 +8,17 @@ import pgSession from 'connect-pg-simple';
 import fileUploads from './src/middleware/file-uploads.js';
 import homeRoute from './src/routes/index.js';
 import layouts from './src/middleware/layouts.js';
-import roles from './src/middleware/role.js';
+import checkRole from './src/middleware/role.js';
 import path from "path";
 import { configureStaticPaths } from './src/utils/index.js';
 import { fileURLToPath } from 'url';
 import { testDatabase } from './src/models/index.js';
 import vehicleRoutes from './src/routes/vehicles.js';
 import contactRoutes from './src/routes/contact.js';
-// import dashboardRoutes from './src/routes/dashboard.js';
 import categoriesRoutes from './src/routes/catgegories.js';
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
+import { check } from 'express-validator';
 
 /**
  * Global Variables
@@ -48,8 +48,6 @@ app.set('layout', 'default');
 app.set('layouts', path.join(__dirname, 'src/views/layouts'));
 app.use(layouts);
 
-//middleware for the roles
-app.use(roles);
 
 // Middleware to process multipart form data with file uploads
 app.use(fileUploads);
@@ -70,6 +68,8 @@ app.use(session({
   cookie: { secure: mode === 'production' }
 }));
 
+//middleware for the roles
+app.use(checkRole);
 /**
  * Routes
  */
