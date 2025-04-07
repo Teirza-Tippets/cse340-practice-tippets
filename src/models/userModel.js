@@ -4,7 +4,7 @@ import dbClient from '../models/index.js';
 export async function createUser(name, email, password, role = 'user') {
   const hash = await bcrypt.hash(password, 10);
   const result = await  dbClient.query(
-    `INSERT INTO users (username, email, password, role)
+    `INSERT INTO users (name, email, password, role)
      VALUES ($1, $2, $3, $4) RETURNING *`,
     [name, email, hash, role]
   );
