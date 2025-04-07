@@ -17,6 +17,7 @@ import userRoutes from './src/routes/register.js';
 import contactRoutes from './src/routes/contact.js';
 import loginRoutes from './src/routes/login.js';
 import dashboardRoutes from './src/routes/dashboard.js';
+import categoriesRoutes from './src/routes/catgegories.js';
 
 /**
  * Global Variables
@@ -74,7 +75,7 @@ app.use('/users', userRoutes);
 app.use('/contact', contactRoutes);
 app.use('/auth', loginRoutes);
 app.use('/dashboard', dashboardRoutes);
-// app.use('/account', accountRoute);
+app.use('/categories' , categoriesRoutes);
 
 // 404 Handler
 app.use((req, res, next) => {

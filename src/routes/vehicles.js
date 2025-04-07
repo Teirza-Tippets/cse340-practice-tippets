@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllVehicles, getClassVehicles } from '../models/vehicleModel.js';
+import { getAllVehicles, getClassVehicles, getVehicleById } from '../models/vehicleModel.js';
 
 const router = express.Router();
 
@@ -18,9 +18,13 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const vehicle = await getClassVehicles(req.params.id);
+    const vehicle = await getVehicleById(req.params.id);
     if (!vehicle) return res.status(404).send('Vehicle not found');
-    res.render('vehicles/show', { vehicle });
+
+    res.render('vehicles/show', {
+      title: vehicle.title,
+      vehicle
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');

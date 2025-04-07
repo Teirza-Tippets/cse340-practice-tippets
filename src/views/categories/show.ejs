@@ -1,0 +1,10 @@
+<h1><%= title %></h1>
+<ul>
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <h2><%= vehicle.title %></h2>
+      <p>Price: $<%= vehicle.price %></p>
+    </li>
+  <% }) %>
+  <a href="/categories">← Back to listings</a>
+</ul>
