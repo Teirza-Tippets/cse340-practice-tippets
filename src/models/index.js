@@ -74,3 +74,4 @@ export const testDatabase = async () => {
 };
 
 export default dbClient;
+export { pool as rawPool };

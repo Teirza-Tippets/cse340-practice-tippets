@@ -12,13 +12,13 @@ import checkRole from './src/middleware/role.js';
 import path from "path";
 import { configureStaticPaths } from './src/utils/index.js';
 import { fileURLToPath } from 'url';
+import { rawPool } from './src/models/index.js';
 import { testDatabase } from './src/models/index.js';
 import vehicleRoutes from './src/routes/vehicles.js';
 import contactRoutes from './src/routes/contact.js';
 import categoriesRoutes from './src/routes/catgegories.js';
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
-import { check } from 'express-validator';
 
 /**
  * Global Variables
@@ -60,9 +60,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session middleware setup
 const PgSession = pgSession(session);
+
 app.use(session({
-  store: new PgSession({ pool: testDatabase }),
-  secret: process.env.SESSION_SECRET || 'yourSecretKey',
+  store: new PgSession({ pool: rawPool }),
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: { secure: mode === 'production' }

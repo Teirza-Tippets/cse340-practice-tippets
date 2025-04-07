@@ -5,8 +5,9 @@ const router = express.Router();
 
 // Login and Register Routes
 router.get('/login', (req, res) => {
-  res.render('auth/login', { title: 'Login' });
+  res.render('auth/login', { title: 'Login', error: null });
 });
+
 
 router.post('/login', login);
 
