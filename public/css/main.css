@@ -38,6 +38,7 @@ body {
 
               & li {
                   margin: 0 1rem;
+                  background-color: #333;
               }
 
               & a {
@@ -53,33 +54,6 @@ body {
       }
   }
 
-  & nav {
-      background-color: #444;
-      color: #fff;
-      padding: 1rem;
-      text-align: right;
-
-      & a {
-          color: #fff;
-          margin: 0 1rem;
-          text-decoration: none;
-
-          &:hover {
-              text-decoration: underline;
-          }
-      }
-
-      & ul {
-          list-style-type: none;
-          padding: 0;
-          margin: 0;
-
-          & li {
-              display: inline-block;
-          }
-      }
-  }
-
   & footer {
     background-color: #333;
     color: #fff;
@@ -87,21 +61,6 @@ body {
     text-align: center;
     
   }
-
-
-nav ul {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-}
-
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-}
-
 
 form {
   max-width: 500px;
@@ -131,4 +90,62 @@ button {
 
 button:hover {
   background-color: white;
+}
+
+/* Page title */
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 2rem;
+  color: #333;
+}
+
+/* Vehicle list styling */
+ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem;
+}
+
+/* Individual vehicle card */
+li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Vehicle title link */
+li h2 a {
+  font-size: 1.25rem;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+li h2 a:hover {
+  text-decoration: underline;
+}
+
+/* Vehicle details */
+li p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+/* Vehicle image */
+li img {
+  display: block;
+  margin-top: 1rem;
+  max-width: 100%;
+  border-radius: 0.5rem;
 }
