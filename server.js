@@ -12,8 +12,7 @@ import checkRole from './src/middleware/role.js';
 import path from "path";
 import { configureStaticPaths } from './src/utils/index.js';
 import { fileURLToPath } from 'url';
-import { rawPool } from './src/models/index.js';
-import { testDatabase } from './src/models/index.js';
+import dbClient, { testDatabase } from './src/models/index.js';
 import vehicleRoutes from './src/routes/vehicles.js';
 import contactRoutes from './src/routes/contact.js';
 import categoriesRoutes from './src/routes/catgegories.js';
@@ -59,14 +58,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session middleware setup
-const PgSession = pgSession(session);
+const PostgresStore = pgSession(session);
 
 app.use(session({
-  store: new PgSession({ pool: rawPool }),
-  secret: process.env.SESSION_SECRET,
+  store: new PostgresStore({
+      pool: dbClient, 
+      tableName: 'sessions', 
+      createTableIfMissing: true 
+  }),
+  secret: process.env.SESSION_SECRET || "default-secret",
   resave: false,
-  saveUninitialized: false,
-  cookie: { secure: mode === 'production' }
+  saveUninitialized: true,
+  name: "sessionId",
+  cookie: {
+      secure: false, // Set to `true` in production with HTTPS
+      httpOnly: true, // Prevents client-side access to the cookie
+      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
+  }
 }));
 
 //middleware for the roles
