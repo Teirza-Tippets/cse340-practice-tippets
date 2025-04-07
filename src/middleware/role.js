@@ -6,5 +6,9 @@ export function checkRole(requiredRole) {
       next();
     };
   }
-  
-export default checkRole;
+
+export default function (req, res, next) {
+  console.log('Role middleware hit');
+  // your logic...
+  next(); // Make sure this is hit
+}
